@@ -18,6 +18,7 @@ public class MongoNeoPersister {
 	private static String abRelation;
 	private static String baRelation;
 	private static boolean twoWay;
+	private static boolean apoc;
 	/**
 	 * @param args
 	 * @throws Exception 
@@ -25,7 +26,10 @@ public class MongoNeoPersister {
 	public static void main(String[] args) throws Exception {
 		init();
 		JavaMongoDBConnection.createLibraryRecordOnMongo(id, book, author, mongoClient, database);
-		JavaNeo4JConnector.createLibraryRecordRelationOnNeo(book, author, abRelation, twoWay, baRelation);
+		if(apoc)
+			MongoNeoAPOC.createLibraryRecordRelationViaAPOC(book, author, abRelation, baRelation);
+		else
+			JavaNeo4JConnector.createLibraryRecordRelationOnNeo(book, author, abRelation, twoWay, baRelation);
 	}
 
     private static void init() {
@@ -37,5 +41,6 @@ public class MongoNeoPersister {
     	abRelation = ":HAS_WRITTEN";
     	baRelation = ":WRITTEN_BY";
     	twoWay = true;
+    	apoc = true;
 	}
 }
